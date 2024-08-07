@@ -115,7 +115,7 @@ UNARY = "~"
 
 <YYINITIAL>{RPAREN} { return new Token(Token.RPAREN); }
 
-<YYINITIAL>{NUMBER}  { return new Token(Token.NUMBER, yytext()); }
+<YYINITIAL>{NUMBER} { return new Token(Token.NUMBER, yytext()); }
 
 <YYINITIAL>{UNARY}  { return new Token(Token.UNARY);  }
 

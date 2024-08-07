@@ -48,7 +48,7 @@ public class Parser {
         if(this.next < this.tokens.size() && this.tokens.get(this.next).equals(id)) {
             
             // Codigo para el Shunting Yard Algorithm
-            /*
+            
             if (id == Token.NUMBER) {
 				// Encontramos un numero
 				// Debemos guardarlo en el stack de operandos
@@ -67,7 +67,6 @@ public class Parser {
 				// Que pushOp haga el trabajo, no quiero hacerlo yo aqui
 				pushOp( this.tokens.get(this.next) );
 			}
-			*/
 
             this.next++;
             return true;
@@ -78,17 +77,29 @@ public class Parser {
     // Funcion que verifica la precedencia de un operador
     private int pre(Token op) {
         /* TODO: Su codigo aqui */
-
-        /* El codigo de esta seccion se explicara en clase */
-
         switch(op.getId()) {
         	case Token.PLUS:
         		return 1;
+            case Token.MINUS:
+                return 1;
         	case Token.MULT:
         		return 2;
+            case Token.DIV:
+        		return 2;
+            case Token.MOD:
+        		return 2;
+            case Token.EXP:
+                return 3;
+            case Token.UNARY:
+                return 4;
+            case Token.LPAREN:
+                return 5;
+            case Token.RPAREN:
+        		return 5;
         	default:
         		return -1;
         }
+        /* El codigo de esta seccion se explicara en clase */
     }
 
     private void popOp() {
@@ -130,12 +141,81 @@ public class Parser {
     }
 
     private boolean S() {
+        // System.out.println("S()" + this.next);
         return E() && term(Token.SEMI);
     }
 
     private boolean E() {
+        // System.out.println("E()" + this.next);
+        int save = this.next;
+        next = save;
+        if (E1()) return true;
+        next = save;
+        if (E2()) return true;
+        next = save;
+        if (E3()) return true;
+        next = save;
+        if (E4()) return true;
+        return false;
+    }
+
+    private boolean C() { 
+        // System.out.println("C()" + this.next);  
+        int save = this.next;
+        next = save;
+        if (C1()) return true;
+        next = save;
+        if (C2()) return true;
+        next = save;
+        if (C3()) return true;
+        next = save;
+        if (C4()) return true;
+        next = save;
+        if (C5()) return true;
+        next = save;
+        if (C6()) return true;
         return false;
     }
 
     /* TODO: sus otras funciones aqui */
+    private boolean E1() {
+        // System.out.println("E1()" + this.next);
+        return term(Token.NUMBER) && C();
+    }   
+    private boolean E2() {
+        // System.out.println("E2()" + this.next);
+        return term(Token.NUMBER);
+    }
+    private boolean E3() {
+        // System.out.println("E3()" + this.next);
+        return term(Token.UNARY) && E();
+    }
+    private boolean E4() {
+        // System.out.println("E4()" + this.next);
+        return term(Token.LPAREN) && E() && term(Token.RPAREN);
+    }
+    private boolean C1() {
+        // System.out.println("C1()" + this.next);
+        return term(Token.PLUS) && E();
+    }
+    private boolean C2() {
+        // System.out.println("C2()" + this.next);
+        return term(Token.MINUS) && E();
+    }
+    private boolean C3() {
+        // System.out.println("C3()" + this.next);
+        return term(Token.MULT) && E();
+    }
+    private boolean C4() {
+        // System.out.println("C4()" + this.next);
+        return term(Token.DIV) && E();
+    } 
+    private boolean C5() {
+        // System.out.println("C5()" + this.next);
+        return term(Token.MOD) && E();
+    }
+    private boolean C6() {
+        // System.out.println("C6()" + this.next);
+        return term(Token.EXP) && E();
+    }
 }
